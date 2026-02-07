@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Атмосфера: Гра</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Додаткові стилі для гри */
+        .level-stars {
+            color: gold;
+            font-size: 18px;
+            margin: 8px 0;
+        }
+        
+        .level-score {
+            font-weight: bold;
+            margin: 5px 0;
+            font-size: 14px;
+            color: var(--accent-cyan);
+        }
+        
+        .lb-class {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-left: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--secondary);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        #message {
+            display: none;
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 900;
+            z-index: 3000;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -100%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header class="game-header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="player-info">
+                <div class="username" id="username">Гравець</div>
+                <div class="player-class" id="player-class-display">6 клас</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-gem"></i>
+                    <span id="crystal-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="total-stars">0</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-trophy"></i>
+                    <span id="total-score">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основний контент -->
+    <main class="game-container">
+        <div class="hero-section">
+            <h1 class="game-title">🌍 Атмосфера</h1>
+            <p class="game-subtitle">Досліджуй та вивчай атмосферу Землі</p>
+            
+            <div class="progress-card">
+                <div class="progress-header">
+                    <h3><i class="fas fa-chart-line"></i> Твій прогрес</h3>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Завершено</span>
+                        <span id="progress-text">0/6</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сітка рівнів -->
+        <section class="levels-section">
+            <h2 class="section-title"><i class="fas fa-gamepad"></i> Рівні</h2>
+            <div class="levels-grid" id="levels-grid">
+                <!-- Рівні будуть генеруватися через JS -->
+            </div>
+        </section>
+
+        <!-- Лідерборд -->
+        <section class="leaderboard-section">
+            <h2 class="section-title"><i class="fas fa-trophy"></i> Топ гравців</h2>
+            <div class="leaderboard-card">
+                <div id="leaderboard">
+                    <!-- Лідерборд буде завантажуватися -->
+                </div>
+                <button class="btn-refresh" onclick="loadLeaderboard()">
+                    <i class="fas fa-sync-alt"></i> Оновити
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер з навігацією -->
+    <nav class="game-nav">
+        <a href="game.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Гра</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-book"></i>
+            <span>Уроки</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showProfile()">
+            <i class="fas fa-user"></i>
+            <span>Профіль</span>
+        </a>
+        <a href="#" class="nav-item" onclick="resetGame()">
+            <i class="fas fa-redo"></i>
+            <span>Скинути</span>
+        </a>
+    </nav>
+
+    <!-- Модальне вікно профілю -->
+    <div id="profile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Твій профіль</h3>
+            <div class="profile-info">
+                <input type="text" id="player-name-input" placeholder="Твоє ім'я" class="input-field">
+                <input type="text" id="player-class-input" placeholder="Клас" class="input-field">
+                <button class="btn-primary" onclick="saveProfile()">Зберегти</button>
+                <button class="btn-secondary" onclick="closeProfile()" style="margin-top: 10px;">Закрити</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Повідомлення -->
+    <div id="message"></div>
+
+    <script>
+        // ============ КОНФІГУРАЦІЯ ГРИ ============
+        const GAME_CONFIG = {
+            apiUrl: 'https://script.google.com/macros/s/AKfycbyCw1v0aK2h7_acX8brCUlzCeFU4RzZbCucH93LZy2jV4NvhTlB5Nz8URju7LlfZCw/exec',
+            
+            levels: [
+                { 
+                    id: 1, 
+                    title: "Температура повітря", 
+                    theme: "Температура", 
+                    emoji: "🌡️",
+                    color: "#FF9500",
+                    colorLight: "#FF950080"
+                },
+                { 
+                    id: 2, 
+                    title: "Атмосферний тиск", 
+                    theme: "Тиск", 
+                    emoji: "📉",
+                    color: "#00FFFF",
+                    colorLight: "#00FFFF80"
+                },
+                { 
+                    id: 3, 
+                    title: "Вітер", 
+                    theme: "Вітер", 
+                    emoji: "🌬️",
+                    color: "#39FF14",
+                    colorLight: "#39FF1480"
+                },
+                { 
+                    id: 4, 
+                    title: "Хмари та вологість", 
+                    theme: "Хмари", 
+                    emoji: "☁️",
+                    color: "#C77DFF",
+                    colorLight: "#C77DFF80"
+                },
+                { 
+                    id: 5, 
+                    title: "Опади", 
+                    theme: "Опади", 
+                    emoji: "🌧️",
+                    color: "#0099FF",
+                    colorLight: "#0099FF80"
+                },
+                { 
+                    id: 6, 
+                    title: "Підсумковий проект", 
+                    theme: "Проект", 
+                    emoji: "🧭",
+                    color: "#FF4081",
+                    colorLight: "#FF408180"
+                }
+            ]
+        };
+
+        // ============ ДАНІ ГРАВЦЯ ============
+        let player = {
+            name: localStorage.getItem('playerName') || 'Гравець',
+            class: localStorage.getItem('playerClass') || '6 клас',
+            crystals: parseInt(localStorage.getItem('playerCrystals')) || 0,
+            completed: JSON.parse(localStorage.getItem('completedLevels')) || [],
+            stars: JSON.parse(localStorage.getItem('levelStars')) || {},
+            scores: JSON.parse(localStorage.getItem('levelScores')) || {}
+        };
+
+        // ============ ІНІЦІАЛІЗАЦІЯ ГРИ ============
+        function initGame() {
+            console.log('🚀 Ініціалізація гри...');
+            
+            // Перевіряємо URL параметри (якщо повернулися з рівня)
+            const urlParams = new URLSearchParams(window.location.search);
+            const levelId = urlParams.get('level');
+            const score = urlParams.get('score');
+            const stars = urlParams.get('stars');
+            
+            if (levelId && score && stars) {
+                saveLevelResults(parseInt(levelId), parseInt(score), parseInt(stars));
+                // Видаляємо параметри з URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            updatePlayerDisplay();
+            renderLevels();
+            loadLeaderboard();
+        }
+
+        // ============ ОНОВЛЕННЯ ВІДОБРАЖЕННЯ ============
+        function updatePlayerDisplay() {
+            document.getElementById('username').textContent = player.name;
+            document.getElementById('player-class-display').textContent = player.class;
+            document.getElementById('crystal-count').textContent = player.crystals;
+            
+            // Загальна кількість зірок
+            const totalStars = Object.values(player.stars).reduce((sum, stars) => sum + stars, 0);
+            document.getElementById('total-stars').textContent = totalStars;
+            
+            // Загальний рахунок
+            const totalScore = Object.values(player.scores).reduce((sum, score) => sum + score, 0);
+            document.getElementById('total-score').textContent = totalScore;
+            
+            // Прогрес
+            const completedCount = player.completed.length;
+            const percent = Math.round((completedCount / GAME_CONFIG.levels.length) * 100);
+            
+            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('progress-text').textContent = `${completedCount}/${GAME_CONFIG.levels.length}`;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+        }
+
+        // ============ ВІДОБРАЖЕННЯ РІВНІВ ============
+        function renderLevels() {
+            const container = document.getElementById('levels-grid');
+            container.innerHTML = '';
+            
+            GAME_CONFIG.levels.forEach(level => {
+                const isUnlocked = level.id === 1 || player.completed.includes(level.id - 1);
+                const stars = player.stars[level.id] || 0;
+                const score = player.scores[level.id] || 0;
+                
+                const levelCard = document.createElement('div');
+                levelCard.className = `level-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+                levelCard.style.borderColor = isUnlocked ? level.color : '#666';
+                
+                levelCard.innerHTML = `
+                    <div class="level-number">${level.id}</div>
+                    <div class="level-emoji">${level.emoji}</div>
+                    <div class="level-title">${level.title}</div>
+                    
+                    ${isUnlocked ? `
+                    <div class="level-stars">
+                        ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}
+                    </div>
+                    <div class="level-score">💎 ${score}</div>
+                    ` : ''}
+                    
+                    <button class="level-button" 
+                        ${!isUnlocked ? 'disabled' : ''}
+                        style="background: linear-gradient(45deg, ${level.color}, ${level.colorLight})">
+                        ${isUnlocked ? 'ГРАТИ' : '🔒 ЗАБЛОКОВАНО'}
+                    </button>
+                `;
+                
+                if (isUnlocked) {
+                    levelCard.querySelector('.level-button').onclick = () => startLevel(level.id);
+                }
+                
+                container.appendChild(levelCard);
+            });
+        }
+
+        // ============ ЗАПУСК РІВНЯ ============
+        function startLevel(levelId) {
+            const level = GAME_CONFIG.levels.find(l => l.id === levelId);
+            if (!level) return;
+            
+            // Перехід на сторінку рівня
+            window.location.href = `levels/level${levelId}.html`;
+        }
+
+        // ============ ЗБЕРЕЖЕННЯ РЕЗУЛЬТАТІВ ============
+        function saveLevelResults(levelId, score, stars) {
+            // Оновлюємо дані гравця
+            if (!player.completed.includes(levelId)) {
+                player.completed.push(levelId);
+            }
+            
+            player.stars[levelId] = Math.max(player.stars[levelId] || 0, stars);
+            player.scores[levelId] = Math.max(player.scores[levelId] || 0, score);
+            
+            // Кристали за зірки та бали
+            const crystalsEarned = Math.floor(score / 10) + stars * 50;
+            player.crystals += crystalsEarned;
+            
+            // Зберігаємо в localStorage
+            savePlayerData();
+            
+            // Надсилаємо на сервер
+            sendToLeaderboard(score, GAME_CONFIG.levels[levelId - 1].theme);
+            
+            // Оновлюємо відображення
+            updatePlayerDisplay();
+            renderLevels();
+            
+            // Показуємо результат
+            showMessage(`Рівень завершено! +${score} балів ⭐${stars}/3 +${crystalsEarned}💎`, 'success');
+        }
+
+        function savePlayerData() {
+            localStorage.setItem('playerName', player.name);
+            localStorage.setItem('playerClass', player.class);
+            localStorage.setItem('playerCrystals', player.crystals.toString());
+            localStorage.setItem('completedLevels', JSON.stringify(player.completed));
+            localStorage.setItem('levelStars', JSON.stringify(player.stars));
+            localStorage.setItem('levelScores', JSON.stringify(player.scores));
+        }
+
+        // ============ ЛІДЕРБОРД ============
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch(GAME_CONFIG.apiUrl);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.leaderboard) {
+                    renderLeaderboard(data.leaderboard);
+                } else {
+                    showDemoLeaderboard();
+                }
+            } catch (error) {
+                console.log('Використовуємо демо лідерборд');
+                showDemoLeaderboard();
+            }
+        }
+
+        function renderLeaderboard(leaderboardData) {
+            const container = document.getElementById('leaderboard');
+            container.innerHTML = '';
+            
+            leaderboardData.slice(0, 10).forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'leaderboard-row';
+                
+                const medal = index < 3 ? ['🥇', '🥈', '🥉'][index] : '';
+                const isCurrentPlayer = item.name === player.name && item.class === player.class;
+                
+                if (isCurrentPlayer) {
+                    row.classList.add('lb-you');
+                }
+                
+                row.innerHTML = `
+                    <div class="lb-rank">${index + 1}</div>
+                    <div class="lb-medal">${medal}</div>
+                    <div class="lb-name">
+                        ${item.name}
+                        <span class="lb-class">(${item.class})</span>
+                    </div>
+                    <div class="lb-score">💎 ${item.total || 0}</div>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        function showDemoLeaderboard() {
+            const demoData = [
+                { name: "Аліса", class: "6А", total: 1710 },
+                { name: "Максим", class: "6Б", total: 1600 },
+                { name: "Софія", class: "6В", total: 1480 },
+                { name: "Тимур", class: "6А", total: 1360 },
+                { name: player.name, class: player.class, total: player.crystals },
+                { name: "Олексій", class: "6Б", total: 1200 },
+                { name: "Марія", class: "6В", total: 1150 },
+                { name: "Денис", class: "6А", total: 980 }
+            ];
+            
+            renderLeaderboard(demoData);
+        }
+
+        async function sendToLeaderboard(score, theme) {
+            try {
+                const playerData = {
+                    name: player.name,
+                    class: player.class,
+                    theme: theme,
+                    points: score
+                };
+                
+                await fetch(GAME_CONFIG.apiUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(playerData)
+                });
+                
+                console.log('Результати відправлено на сервер');
+            } catch (error) {
+                console.log('Помилка відправки на сервер:', error);
+            }
+        }
+
+        // ============ ПРОФІЛЬ ============
+        function showProfile() {
+            document.getElementById('player-name-input').value = player.name;
+            document.getElementById('player-class-input').value = player.class;
+            document.getElementById('profile-modal').style.display = 'flex';
+        }
+
+        function closeProfile() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('player-name-input').value.trim();
+            const newClass = document.getElementById('player-class-input').value.trim();
+            
+            if (newName) {
+                player.name = newName;
+            }
+            
+            if (newClass) {
+                player.class = newClass;
+            }
+            
+            savePlayerData();
+            updatePlayerDisplay();
+            closeProfile();
+            
+            showMessage('Профіль оновлено!', 'success');
+        }
+
+        // ============ СКИДАННЯ ГРИ ============
+        function resetGame() {
+            if (confirm('Ви впевнені, що хочете скинути всю гру? Будуть втрачені всі досягнення!')) {
+                localStorage.clear();
+                player = {
+                    name: 'Гравець',
+                    class: '6 клас',
+                    crystals: 0,
+                    completed: [],
+                    stars: {},
+                    scores: {}
+                };
+                
+                initGame();
+                showMessage('Гру скинуто!', 'info');
+            }
+        }
+
+        // ============ ПОВІДОМЛЕННЯ ============
+        function showMessage(text, type = 'info') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            
+            if (type === 'success') {
+                messageEl.style.background = 'linear-gradient(45deg, #39FF14, #00cc00)';
+                messageEl.style.color = 'black';
+            } else if (type === 'error') {
+                messageEl.style.background = 'linear-gradient(45deg, #FF0000, #cc0000)';
+                messageEl.style.color = 'white';
+            } else {
+                messageEl.style.background = 'linear-gradient(45deg, #00FFFF, #0099FF)';
+                messageEl.style.color = 'black';
+            }
+            
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============ ЗАПУСК ПРИ ЗАВАНТАЖЕННІ ============
+        document.addEventListener('DOMContentLoaded', initGame);
+        
+        // Закриття модального вікна при кліку навколо
+        document.getElementById('profile-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProfile();
+            }
+        });
+    </script>
+</body>
+</html>

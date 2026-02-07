@@ -1,0 +1,834 @@
+:root {
+    --primary: #0F172A;
+    --secondary: #1E293B;
+    --accent-cyan: #00FFFF;
+    --accent-orange: #FF9500;
+    --accent-lime: #39FF14;
+    --accent-purple: #C77DFF;
+    --text-light: #E2E8F0;
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    background: var(--primary);
+    color: var(--text-light);
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 149, 0, 0.05) 0%, transparent 20%);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Кнопки */
+.btn-primary {
+    padding: 12px 28px;
+    background: linear-gradient(45deg, var(--accent-orange), #FFB800);
+    color: #000;
+    font-weight: 900;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 20px var(--accent-orange);
+    transition: all 0.3s;
+    font-size: 18px;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px var(--accent-orange);
+}
+
+.btn-secondary {
+    padding: 12px 28px;
+    background: linear-gradient(45deg, var(--accent-cyan), #0099FF);
+    color: #000;
+    font-weight: 900;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 20px var(--accent-cyan);
+    transition: all 0.3s;
+    font-size: 18px;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px var(--accent-cyan);
+}
+
+/* Карточки */
+.lesson-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-radius: 32px;
+    padding: 30px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    max-width: 1200px;
+    margin: 20px auto;
+    position: relative;
+}
+
+/* Заголовки */
+h1 {
+    font-size: 42px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px var(--accent-orange);
+}
+
+h2 {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 28px;
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subtitle {
+    font-size: 22px;
+    text-align: center;
+    opacity: 0.9;
+    margin-bottom: 40px;
+}
+
+/* Навігація */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Прогрес-бар */
+.progress-container {
+    margin: 30px 0;
+}
+
+.progress-bar {
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-lime));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Повідомлення */
+.message {
+    padding: 20px;
+    border-radius: 20px;
+    margin: 20px 0;
+    text-align: center;
+    font-weight: bold;
+    animation: fadeIn 0.5s;
+}
+
+.message.success {
+    background: rgba(57, 255, 20, 0.2);
+    border: 2px solid var(--accent-lime);
+    box-shadow: 0 0 20px var(--accent-lime);
+}
+
+.message.info {
+    background: rgba(0, 255, 255, 0.2);
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 0 0 20px var(--accent-cyan);
+}
+
+/* Анімації */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.pulse { animation: pulse 2s infinite; }
+.float { animation: float 3s ease-in-out infinite; }
+
+/* ============ МОБІЛЬНА АДАПТАЦІЯ ============ */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 32px;
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+    
+    .lesson-card {
+        margin: 10px;
+        padding: 20px;
+        border-radius: 20px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+}
+
+/* ============ СТИЛІ ДЛЯ ГРИ (game.html) ============ */
+
+/* Хедер гри */
+.game-header {
+    background: var(--secondary);
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.back-btn {
+    color: var(--accent-cyan);
+    font-size: 20px;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.player-class {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.stats {
+    display: flex;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stat-item i {
+    color: var(--accent-cyan);
+    font-size: 16px;
+}
+
+/* Основний контент гри */
+.game-container {
+    max-width: 100%;
+    margin: 80px 0 70px;
+    padding: 20px;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.game-title {
+    font-size: 42px;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, var(--accent-cyan), var(--accent-lime));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.game-subtitle {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 25px;
+}
+
+/* Картка прогресу */
+.progress-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress-header h3 {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progress-percent {
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--accent-lime);
+}
+
+/* Сітка рівнів */
+.levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.level-card {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid var(--glass-border);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.level-card.unlocked {
+    cursor: pointer;
+}
+
+.level-card.unlocked:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+    border-color: var(--accent-cyan);
+}
+
+.level-card.locked {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+.level-emoji {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.level-number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--accent-purple);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+.level-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    flex-grow: 1;
+    line-height: 1.3;
+}
+
+.level-stars {
+    margin: 8px 0;
+    font-size: 18px;
+    color: gold;
+}
+
+.level-score {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--accent-cyan);
+}
+
+.level-button {
+    background: linear-gradient(45deg, var(--accent-cyan), #0099FF);
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    font-size: 14px;
+}
+
+.level-button:disabled {
+    background: #666;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.level-button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--accent-cyan);
+}
+
+/* Картка лідерборду */
+.leaderboard-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    margin-top: 10px;
+}
+
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-row:last-child {
+    border-bottom: none;
+}
+
+.lb-rank {
+    width: 40px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.lb-medal {
+    font-size: 24px;
+    width: 40px;
+    text-align: center;
+}
+
+.lb-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.lb-class {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 5px;
+}
+
+.lb-score {
+    font-weight: 900;
+    color: var(--accent-cyan);
+    font-size: 16px;
+}
+
+.lb-you {
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 5px 0;
+}
+
+.btn-refresh {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid var(--glass-border);
+    padding: 12px 20px;
+    border-radius: 50px;
+    margin-top: 15px;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 700;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.btn-refresh:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+/* Нижня навігація гри */
+.game-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--secondary);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid var(--glass-border);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-light);
+    opacity: 0.7;
+    transition: all 0.3s;
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+
+.nav-item.active {
+    opacity: 1;
+    color: var(--accent-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Модальні вікна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--secondary);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+}
+
+/* Повідомлення */
+#message {
+    display: none;
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-weight: 900;
+    z-index: 3000;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -100%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* ============ СТИЛІ ДЛЯ ГОЛОВНОЇ СТОРІНКИ (index.html) ============ */
+
+/* Герой секція */
+.hero {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
+    border-radius: 0 0 30px 30px;
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+    background: linear-gradient(45deg, var(--accent-cyan), var(--accent-lime));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    opacity: 0.9;
+    margin-bottom: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Статистика */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Промо гри */
+.game-promo {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    border-radius: 20px;
+    padding: 30px;
+    margin: 40px 0;
+    text-align: center;
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+}
+
+.game-promo h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.game-promo p {
+    font-size: 18px;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+/* Сітка тем */
+.topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.topic-card {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-cyan);
+}
+
+.topic-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: var(--accent-cyan);
+}
+
+.topic-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.topic-description {
+    opacity: 0.9;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Футер */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 50px;
+    border-top: 1px solid var(--glass-border);
+    opacity: 0.8;
+    font-size: 14px;
+}
+
+/* Додаткові анімації */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-cyan); }
+    50% { box-shadow: 0 0 40px var(--accent-cyan); }
+}
+
+.bounce { animation: bounce 0.5s ease infinite; }
+.glow { animation: glow 2s infinite; }
+
+/* Мобільна адаптація для головної сторінки */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 36px;
+    }
+    
+    .hero-subtitle {
+        font-size: 18px;
+    }
+    
+    .topics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-promo h2 {
+        font-size: 24px;
+    }
+    
+    .game-promo p {
+        font-size: 16px;
+    }
+    
+    .topic-title {
+        font-size: 18px;
+    }
+}
