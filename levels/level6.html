@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AR-сцена з планетою для дітей">
+    <title>🌍«Світ на долоні » 🎈</title>
+
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+        
+        a-scene {
+            width: 100% !important;
+            height: 100% !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: transparent;
+        }
+
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(135, 206, 235, 0.2);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #FF4500;
+            font-size: 1.8em;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse { animation: pulse 1.5s infinite; }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .sound-btn, .youtube-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .sound-btn { background-color: #4CAF50; color: white; }
+        .sound-btn.off { background-color: #f44336; }
+        .youtube-btn { background-color: #FF9800; color: white; }
+        .youtube-btn:hover { background-color: #FFB300; }
+    </style>
+</head>
+<body>
+    <div class="arjs-loader" id="loader">
+        <div class="pulse">🌍 Світ на долоні 🎈</div>
+        <div style="margin-top: 20px; font-size: 1.2em;">Наведи камеру на маркер! 😊🎨</div>
+    </div>
+
+    <a-scene
+        mindar-image="imageTargetSrc: ./my-marker.mind;"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        loading-screen="enabled: false"
+        embedded
+        renderer="colorManagement: true; physicallyCorrectLights: true;"
+        touch-gestures
+    >
+        <a-assets>
+            <audio id="bg-music" src="./bg-music.mp3" preload="auto" loop></audio>
+            <img id="earth-texture" src="./earth.jpg">
+        </a-assets>
+
+        <a-camera
+            id="camera"
+            position="0 0 1.5"
+            look-controls="enabled: false"
+        ></a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-sphere
+                id="hand-planet"
+                position="0 0 -0.5"
+                radius="0.4"
+                src="#earth-texture"
+                visible="false"
+                material="opacity: 1; transparent: false"
+            >
+                <a-animation
+                    attribute="rotation"
+                    to="0 360 0"
+                    dur="5000"
+                    repeat="indefinite"
+                ></a-animation>
+            </a-sphere>
+        </a-entity>
+    </a-scene>
+
+    <div class="controls">
+        <button id="sound-btn" class="sound-btn">Увімкнути звук</button>
+        <a href="https://www.youtube.com/playlist?list=PL6UDFwT9TzFw5K8Tzu_OgsDz7vV3N9eY-" target="_blank" class="youtube-btn">YouTube SmartLessa</a>
+    </div>
+
+    <script>
+        // Адаптивність для повного екрану
+        function fixHeight() { 
+            document.body.style.height = window.innerHeight + 'px'; 
+        }
+        fixHeight();
+        window.addEventListener('resize', fixHeight);
+
+        // Посилання на елементи
+        const loader = document.querySelector('#loader');
+        const targetEntity = document.querySelector('[mindar-image-target]');
+        const planet = document.querySelector('#hand-planet');
+        const bgMusic = document.querySelector('#bg-music');
+        const soundBtn = document.querySelector('#sound-btn');
+
+        // Перевірка завантаження текстури
+        const earthTexture = document.querySelector('#earth-texture');
+        if (earthTexture) {
+            earthTexture.addEventListener('load', () => {
+                console.log('Текстура earth.jpg успішно завантажена');
+            });
+            earthTexture.addEventListener('error', () => {
+                console.error('Помилка завантаження текстури earth.jpg');
+            });
+        }
+
+        // Логіка відстеження маркера
+        if (targetEntity) {
+            targetEntity.addEventListener('targetFound', () => {
+                console.log("🎯 Маркер знайдено! Планета з'явилася.");
+                loader.style.display = 'none';
+                if (planet) {
+                    planet.setAttribute('visible', 'true');
+                    console.log("Планета видима:", planet.getAttribute('visible'));
+                    planet.components.animation.pause();
+                }
+                if (bgMusic && bgMusic.paused) {
+                    bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
+                    soundBtn.classList.remove('off');
+                    soundBtn.textContent = 'Вимкнути звук';
+                }
+            });
+
+            targetEntity.addEventListener('targetLost', () => {
+                console.log("ℹ️ Маркер втрачено.");
+                if (planet) {
+                    planet.setAttribute('visible', 'false');
+                    console.log("Планета невидима:", planet.getAttribute('visible'));
+                    planet.components.animation.play();
+                }
+                if (bgMusic && !bgMusic.paused) bgMusic.pause();
+                loader.style.display = 'flex';
+                loader.querySelector('.pulse').textContent = '🌍 Світ на долоні 🎈';
+                loader.querySelector('div[style]').textContent = 'Наведи камеру на маркер! 😊🎨';
+            });
+        } else {
+            console.error('Елемент mindar-image-target не знайдено!');
+        }
+
+        // Обробка кнопки звуку
+        soundBtn.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
+                soundBtn.classList.remove('off');
+                soundBtn.textContent = 'Вимкнути звук';
+            } else {
+                bgMusic.pause();
+                soundBtn.classList.add('off');
+                soundBtn.textContent = 'Увімкнути звук';
+            }
+        });
+
+        // Компонент для обробки сенсорних жестів
+        AFRAME.registerComponent('touch-gestures', {
+            schema: {
+                minScale: { type: 'number', default: 0.2 },
+                maxScale: { type: 'number', default: 3.0 },
+                rotationSpeed: { type: 'number', default: 2.0 }
+            },
+            init: function () {
+                this.isRotating = false;
+                this.isPinching = false;
+                this.startPos = { x: 0, y: 0 };
+                this.currentScale = 1;
+                this.planet = document.querySelector('#hand-planet');
+
+                if (!this.planet) {
+                    console.error('Планета не знайдена в компоненті touch-gestures');
+                    return;
+                }
+
+                console.log('Компонент touch-gestures ініціалізовано');
+
+                this.el.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    console.log('touchstart triggered, touches:', e.touches.length);
+                    if (e.touches.length === 1) {
+                        this.isRotating = true;
+                        this.startPos.x = e.touches[0].pageX;
+                        this.startPos.y = e.touches[0].pageY;
+                        console.log('Початок обертання, позиція:', this.startPos);
+                    } else if (e.touches.length === 2) {
+                        this.isPinching = true;
+                        this.isRotating = false;
+                        this.initialDistance = Math.hypot(
+                            e.touches[0].pageX - e.touches[1].pageX,
+                            e.touches[0].pageY - e.touches[1].pageY
+                        );
+                        this.currentScale = this.planet.object3D.scale.x;
+                        console.log('Початок масштабування, відстань:', this.initialDistance);
+                    }
+                });
+
+                this.el.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    console.log('touchmove triggered, touches:', e.touches.length);
+                    if (this.isPinching && e.touches.length === 2) {
+                        const currentDistance = Math.hypot(
+                            e.touches[0].pageX - e.touches[1].pageX,
+                            e.touches[0].pageY - e.touches[1].pageY
+                        );
+                        const scaleFactor = currentDistance / this.initialDistance;
+                        const newScale = Math.max(this.data.minScale, Math.min(this.data.maxScale, this.currentScale * scaleFactor));
+                        this.planet.object3D.scale.set(newScale, newScale, newScale);
+                        console.log('Масштабування, новий масштаб:', newScale);
+                    } else if (this.isRotating && e.touches.length === 1) {
+                        const deltaX = (e.touches[0].pageX - this.startPos.x) * this.data.rotationSpeed;
+                        const deltaY = (e.touches[0].pageY - this.startPos.y) * this.data.rotationSpeed;
+                        this.planet.object3D.rotation.y += THREE.MathUtils.degToRad(deltaX);
+                        this.planet.object3D.rotation.x += THREE.MathUtils.degToRad(deltaY);
+                        this.startPos.x = e.touches[0].pageX;
+                        this.startPos.y = e.touches[0].pageY;
+                        console.log('Обертання, deltaX:', deltaX, 'deltaY:', deltaY);
+                    }
+                });
+
+                this.el.addEventListener('touchend', () => {
+                    console.log('touchend triggered');
+                    this.isRotating = false;
+                    this.isPinching = false;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+</html>
